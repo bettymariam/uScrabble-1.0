@@ -318,7 +318,7 @@ function dragDropOntoHolder(ev) {
 }
 
 function checkWord(){
-  let proxy = "http://galvanize-cors-proxy.herokuapp.com/"
+  let proxy = "https://galvanize-cors-proxy.herokuapp.com/"
   let tempLetters = []
   for(index in letters){
     tempLetters.push(letters[index][1])
