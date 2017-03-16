@@ -1,0 +1,314 @@
+body{
+  background-color: firebrick;
+}
+header{
+  color: white;
+  margin-left: 20px;
+  line-height: 0;
+}
+.main {
+  display: flex;
+  border-width: 5px;
+  border-style: outset;
+  background-color: firebrick;
+  width: 95%;
+  align: center;
+  margin-left: 20px;
+}
+.game-area {
+  border-style: inset;
+  border-width: 1px;
+}
+
+.game-info {
+  border-style: solid;
+  border-width: 1px;
+  /*padding: 5px;*/
+  width: 330px;
+  position: relative;
+  margin: 10px;
+  background-color: firebrick;
+  color: white;
+}
+
+.header-background{
+  background-color: mediumblue;
+  font: 24px;
+  font-weight: bold;
+  height: 50px;
+}
+
+.words-played {
+  height: 300px;
+}
+
+.holder {
+  width: 250px;
+  height: 40px;
+  border-style: inset;
+  border-width: 1px;
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  margin: 10px;
+  padding: 5px;
+  background-color: mediumblue;
+}
+
+.tile {
+  width: 35px;
+  height: 35px;
+  display: inline-block;
+  draggable: true;
+}
+
+.message p{
+  font-weight: bold;
+}
+
+.button-holder {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 30px;
+}
+
+.buttons {
+  display: inline-block;
+  background-color: mediumblue;
+  color: white;
+  border-radius: 20%;
+  padding: 5px;
+  width: 75px;
+}
+
+.scrabble-board {
+  margin: 20px;
+  line-height: 0;
+  width: 555px;
+  height: 555px;
+  align-content: center;
+  border-width: 3px;
+  border-color: white;
+  border-style: groove;
+  background-color: wheat;
+}
+
+.cell {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  border: 1px solid lightgray;
+  /*background-color: white;*/
+}
+.cell .img {
+  margin: 0px;
+  padding: 0px;
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  display: inline;
+}
+.score-board {
+  width: 280px;
+  border-style: solid;
+  border-width: 1px;
+  /*padding: 5px;*/*/
+  position: relative;
+  margin: 10px;
+  color: white;;
+}
+
+
+.score{
+  background-color: mediumblue;
+}
+
+
+.inactive {
+  border-color: red;
+  box-shadow: 0px 1px 1px red ,0px 0px 8px red;
+  disabled: 'true';
+  display: none;
+  }
+
+.active {
+  border-color: blue;
+  box-shadow: 0px 1px 1px lightblue ,0px 0px 8px lightblue;
+  enabled: 'true';
+  }
+
+.s-inactive {
+  border-color: red;
+  box-shadow: 0px 1px 1px red ,0px 0px 8px red;
+  disabled: 'true';
+  }
+
+.s-active {
+  border-color: blue;
+  box-shadow: 0px 1px 1px lightblue ,0px 0px 8px lightblue;
+  enabled: 'true';
+  }
+
+
+.v-active {
+  border-color: green;
+  box-shadow: 0px 1px 1px lightblue ,0px 0px 8px lightblue;
+  enabled: 'true';
+  droppable: 'false';
+  draggable: 'false';
+  }
+
+.t-inactive {
+  border-color: none;
+  box-shadow: none;
+  }
+
+.t-active {
+  border-color: blue;
+  box-shadow: 0px 1px 1px lightblue ,0px 0px 8px lightblue;
+  enabled: 'true';
+  droppable: false;
+  }
+
+.start {
+  background-image: url('img/blue-star.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.a {
+  background-image: url('img/A-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.b {
+  background-image: url('img/B-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.c {
+  background-image: url('img/C-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.d {
+  background-image: url('img/D-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.e {
+  background-image: url('img/E-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.f {
+  background-image: url('img/F-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.g {
+  background-image: url('img/G-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.h {
+  background-image: url('img/H-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.i {
+  background-image: url('img/I-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.j {
+  background-image: url('img/J-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.k {
+  background-image: url('img/K-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.l {
+  background-image: url('img/L-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.m {
+  background-image: url('img/M-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.n {
+  background-image: url('img/N-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.o {
+  background-image: url('img/O-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.p {
+  background-image: url('img/P-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.q {
+  background-image: url('img/Q-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.r {
+  background-image: url('img/R-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.s {
+  background-image: url('img/S-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.t {
+  background-image: url('img/T-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.u {
+  background-image: url('img/U-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.v {
+  background-image: url('img/V-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.w {
+  background-image: url('img/W-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.x {
+  background-image: url('img/X-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.y {
+  background-image: url('img/Y-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.z {
+  background-image: url('img/Z-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.wild {
+  background-image: url('img/Blank-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
