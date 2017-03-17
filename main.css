@@ -1,45 +1,73 @@
 body{
-  background-color: firebrick;
+  background-image: url('blue.jpg');
+  background-repeat: no-repeat;
+  background-size: 100%;
+  display:flex;
 }
 header{
+  display: none;
   color: white;
-  margin-left: 20px;
+  margin-left: 5px;
   line-height: 0;
+  display: flex;
 }
+.logo{
+  height: 70px;
+  width: 60px;
+  display: inline-block;
+  margin: ;
+}
+.name{
+  display: inline-block;
+  margin-top: 20px;
+}
+
 .main {
   display: flex;
   border-width: 5px;
   border-style: outset;
-  background-color: firebrick;
-  width: 95%;
+  width: 69%;
   align: center;
-  margin-left: 20px;
+  border-radius: 3%;
+  margin-left: 5px;
 }
 .game-area {
+  background-color: darkblue;
   border-style: inset;
   border-width: 1px;
+  border-radius: 3%
 }
 
 .game-info {
-  border-style: solid;
-  border-width: 1px;
+  /*border-style: solid;
+  border-width: 1px;*/
   /*padding: 5px;*/
-  width: 330px;
+  width: 250px;
   position: relative;
-  margin: 10px;
-  background-color: firebrick;
+  margin: 0px;
   color: white;
+  /*border-radius: 3%;*/
 }
 
 .header-background{
-  background-color: mediumblue;
+  border-radius: 3%
   font: 24px;
   font-weight: bold;
-  height: 50px;
 }
 
 .words-played {
-  height: 300px;
+  height: 200px;
+  width: 255px;
+  border-width: 1px;
+  border-style: solid;
+  margin: 5px;
+  border-radius: 3%;
+  padding: 5px;
+}
+
+.player-id{
+  font: 24px;
+  font-weight: bold;
 }
 
 .holder {
@@ -48,11 +76,12 @@ header{
   border-style: inset;
   border-width: 1px;
   position: absolute;
-  bottom: 60px;
+  bottom: 40px;
   left: 0;
   margin: 10px;
   padding: 5px;
-  background-color: mediumblue;
+  border-radius: 3%;
+  background-color: darkblue;
 }
 
 .tile {
@@ -71,28 +100,28 @@ header{
   position: absolute;
   bottom: 0;
   left: 0;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .buttons {
   display: inline-block;
-  background-color: mediumblue;
+  background-color: darkblue;
   color: white;
   border-radius: 20%;
   padding: 5px;
-  width: 75px;
+  width: 70px;
 }
 
 .scrabble-board {
-  margin: 20px;
+  margin: 15px;
   line-height: 0;
   width: 555px;
   height: 555px;
   align-content: center;
-  border-width: 3px;
+  border-width: 2px;
   border-color: white;
   border-style: groove;
-  background-color: wheat;
+  background-color: silver;
 }
 
 .cell {
@@ -110,21 +139,57 @@ header{
   justify-content: center;
   display: inline;
 }
+#popup {
+  display:flex;
+  position:absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+#play {
+  width: 140px;
+  height: 70px;
+  border-style: inset;
+  border-width: 1px;
+  margin: 10px;
+  padding: 5px;
+  border-radius: 5%;
+  background-color: darkblue;
+  position:absolute;
+  left: 27%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  color: white;
+}
+
+.play-click {
+  width: 35px;
+  height: 35px;
+  display: inline-block;
+}
 .score-board {
-  width: 280px;
+  width: 255px;
+  height: 150px;
   border-style: solid;
   border-width: 1px;
-  /*padding: 5px;*/*/
+  padding: 5px;
   position: relative;
-  margin: 10px;
-  color: white;;
+  margin: 5px;
+  color: white;
+  border-radius: 3%;
+  line-height: 1.5px;
 }
-
 
 .score{
-  background-color: mediumblue;
+  /*margin: 5px;*/
 }
 
+.player-info{
+  margin: 10px;
+}
 
 .inactive {
   border-color: red;

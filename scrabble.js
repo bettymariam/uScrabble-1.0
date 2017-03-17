@@ -12,27 +12,48 @@ const noTileBonus = 25;
 var tiles = [['a',9,1],['b',2,3],['c',2,3],['d',4,2],['e',12,1],['f',2,4],['g',3,2],['h',2,4],['i',9,1],['j',1,8],['k',1,5],['l',4,1],['m',2,3],['n',6,1],['o',8,1],['p',2,3],['q',1,10],['r',6,1],['s',4,1],['t',6,1],['u',4,1],['v',2,4],['w',2,4],['x',1,8],['y',2,4],['z',1,10]]
 //add wild tiles later -['wild',2,0]
 
-//create the scrabble board
-for (var i = 1; i < 226; i++) {
-  if ((i >= 2 && i <= 15) || (i >= 212 && i<=224) || (i%15==0) || (i%15==1)){
-  $('.scrabble-board').append(`<div class="cell ${i} droptarget outer" id="${i}"  ondragenter="return dragEnterBoard(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoBoard(event)" ondragover="return dragOver(event)" draggable="true" ondragstart="return dragStartBoard(event)"></div>`);
-} else {
-  $('.scrabble-board').append(`<div class="cell ${i} droptarget" id="${i}"  ondragenter="return dragEnterBoard(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoBoard(event)" ondragover="return dragOver(event)" draggable="true" ondragstart="return dragStartBoard(event)"></div>`);
-  }
-}
-//create the tiles
-for (index in tiles){
-  for (var i = 0; i < tiles[index][1]; i++) {
-    tiles_left.push([tiles[index][0],tiles[index][2]]);
+
+function createScrabbleBoard(){
+  for (var i = 1; i < 226; i++) {
+    if ((i >= 2 && i <= 15) || (i >= 212 && i<=224) || (i%15==0) || (i%15==1)){
+    $('.scrabble-board').append(`<div class="cell ${i} droptarget outer" id="${i}"  ondragenter="return dragEnterBoard(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoBoard(event)" ondragover="return dragOver(event)" draggable="true" ondragstart="return dragStartBoard(event)"></div>`);
+  } else {
+    $('.scrabble-board').append(`<div class="cell ${i} droptarget" id="${i}"  ondragenter="return dragEnterBoard(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoBoard(event)" ondragover="return dragOver(event)" draggable="true" ondragstart="return dragStartBoard(event)"></div>`);
+    }
   }
 }
 
+function createTiles(){
+  for (index in tiles){
+    for (var i = 0; i < tiles[index][1]; i++) {
+      tiles_left.push([tiles[index][0],tiles[index][2]]);
+    }
+  }
+}
 
-//start game at the center cell
-$('.113').addClass('start');
-getStartTiles();
-$('.message').append(`<p>Your turn</p>`);
-getTurn();
+$(document).ready(function () {
+  $('.main').hide()
+  $("#popup").hide().fadeIn(1000);
+  $("#play").append(`<div class="p play-click"></div>`);
+  $("#play").append(`<div class="l play-click"></div>`);
+  $("#play").append(`<div class="a play-click"></div>`);
+  $("#play").append(`<div class="y play-click"></div>`);
+  $("#play").append(`<p>Click here to start</p>`);
+
+
+  $("#play").on("click", function (e) {
+      e.preventDefault();
+      $("#popup").fadeOut(1000);
+      $("#play").remove();
+  });
+  $('.main').show();
+  createScrabbleBoard();
+  createTiles();
+  $('.113').addClass('start');
+  getStartTiles();
+  $('.message').append(`<p>Your turn</p>`);
+  getTurn();
+});
 
 
 function getTurn(){
@@ -98,23 +119,51 @@ function randomIndex(length){
 }
 
 $('.play').on('click', function(){
+  $('.message').empty();
   if (checkPlacement()){
     if (start){
       if (checkStart()){
         checkWord();
         archiveWord();
         start = false;
+        letters = [];
+        refillTiles();
+        updateTileInfo();
+        current_move = !current_move;
+        getTurn();
       }
     } else {
      checkWord();
      archiveWord();
+     letters = [];
+     refillTiles();
+     updateTileInfo();
+     current_move = !current_move;
+     getTurn();
     }
-    letters = [];
-    refillTiles();
-    updateTileInfo();
-    current_move = !current_move;
-    getTurn();
   }
+})
+
+$('.pass').on('click', function(){
+  current_move = !current_move;
+  getTurn();
+})
+
+$('.clear').on('click',function(){
+  $('.scrabble-board').children().each(function(index){
+    console.log("in clear");
+
+    if ($(this).hasClass('s-active')){
+      console.log($(this).attr("value"));
+      var tempArr = letters.map(function(arr){ return arr[0]})
+      letters.splice(tempArr.indexOf($(this),1));
+      $('.tile-holder1').children().addClass($(this).attr("value")).addClass('t-inactive').removeClass('t-active');
+      $('.tile-holder1').attr('id', $(this).attr("value"));
+      $(this).removeClass($(this).attr("value"));
+      $(this).removeAttr('id')
+      $(this).removeClass('s-active');
+    }
+  })
 })
 
 function updateTileInfo(){
@@ -172,6 +221,7 @@ function checkPlacement(){
 
 function checkStart(){
   if (!$('.113').hasClass('s-active')){
+    $('.message').empty();
     $('.message').append(`<p>Start your word at the star</p>`)
   return false
   }
@@ -182,17 +232,18 @@ function addScore(score){
   if (!current_move){
     player1_score += score;
     $('#p1-score').empty();
-    $('#p1-score').append(player1_score);
+    $('#p1-score').append('Total Score: ' + player1_score);
   } else {
     player2_score += score;
     $('#p2-score').empty();
-    $('#p2-score').append(player2_score);
+    $('#p2-score').append('Total Score: ' + player2_score);
   }
 }
 
 function displayLastMove(success, score, word) {
   if (!current_move) {
     $('#p1-last').empty();
+    $('#p1-last').append('Last move: ')
     if (success == 1) {
         $('#p1-last').append(word + ' - ' + score + 'points');
         $('.words').append(word + '<br>')
@@ -202,6 +253,7 @@ function displayLastMove(success, score, word) {
     addScore(score)
 } else {
     $('#p2-last').empty();
+    $('#p2-last').append('Last move: ')
     if (success == 1) {
         $('#p2-last').append(word + ' - ' + score + 'points');
         $('.words').append(word + '<br>')
@@ -220,6 +272,268 @@ function archiveWord(){
     }
 });
 }
+
+function checkValidity(curr_direction){
+  console.log("validity")
+  var temp_Arr = [];
+  for(let i = 0; i < letters.length; i++){
+    var id_1 = letters[i][0]
+    var left = parseInt(id_1) - 1;
+    var right = parseInt(id_1) + 1;
+    var top = parseInt(id_1) - 15;
+    var bottom = parseInt(id_1) + 15;
+
+    if(i == 0){
+      console.log("first letter")
+      if (curr_direction == 'horizontal') {
+        for(var j = 0; j < 12; j++){
+          if ($('.scrabble-board').children('#'+(left+j)).hasClass('v-active')){
+            letters.unshift($('.scrabble-board').children('#'+(left+j)).attr('value'));
+
+            if ($('.scrabble-board').children('#'+(left+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(top+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(top+j)).attr('value'));
+            } else {
+              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(top+j)).attr('value'));
+            }
+            if ($('.scrabble-board').children('#'+(top+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+
+        }
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
+            } else {
+              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
+            }
+            if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+
+        }
+
+
+      } else {
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(top+j)).hasClass('v-active')){
+            letters.unshift ($('.scrabble-board').children('#'+(top+j)).attr('value'));
+
+            if ($('.scrabble-board').children('#'+(top+j)).hasClass('outer')){
+               break;
+            }
+          } else {
+            break;
+          }
+        }
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(left+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i].shift($('.scrabble-board').children('#'+(left+j)).attr('value'));
+            } else {
+              temp_Arr[i] = [$('.scrabble-board').children('#'+(left+j)).attr('value')];
+            }
+            if ($('.scrabble-board').children('#'+(left+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+
+        }
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(right+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i].shift($('.scrabble-board').children('#'+(right+j)).attr('value'));
+            } else {
+              temp_Arr[i] = [$('.scrabble-board').children('#'+(right+j)).attr('value')];
+            }
+            if ($('.scrabble-board').children('#'+(right+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+      }
+    }
+    if ((i!==0)&&(i !== letters.length-1)){
+      console.log("other letters")
+      if (curr_direction == 'horizontal') {
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(top+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(top+j)).attr('value'));
+            } else {
+              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(top+j)).attr('value'));
+            }
+            if ($('.scrabble-board').children('#'+(top+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+
+        }
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
+            } else {
+              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
+            }
+            if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+
+        }
+      } else {
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(left+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i].shift($('.scrabble-board').children('#'+(left+j)).attr('value'));
+            } else {
+              temp_Arr[i] = [$('.scrabble-board').children('#'+(left+j)).attr('value')];
+            }
+            if ($('.scrabble-board').children('#'+(left+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+
+        }
+        for(var j=0; j<12; j++){
+          if ($('.scrabble-board').children('#'+(right+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i].shift($('.scrabble-board').children('#'+(right+j)).attr('value'));
+            } else {
+              temp_Arr[i] = [$('.scrabble-board').children('#'+(right+j)).attr('value')];
+            }
+            if ($('.scrabble-board').children('#'+(right+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+      }
+    }
+    if ((i === (letters.length-1))){
+      console.log("last letter")
+      if (curr_direction === 'horizontal') {
+        for(var j = 0; j < 12; j++){
+          console.log("first")
+          if ($('.scrabble-board').children('#'+(right+j)).hasClass('v-active')){
+            letters.unshift($('.scrabble-board').children('#'+(right+j)).attr('value'));
+
+            if ($('.scrabble-board').children('#'+(right+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+        for(var j=0; j<12; j++){
+          console.log("second")
+          if ($('.scrabble-board').children('#'+(top+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(top+j)).attr('value'));
+            } else {
+              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(top+j)).attr('value'));
+            }
+            if ($('.scrabble-board').children('#'+(top+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+        for(var j=0; j<12; j++){
+          console.log("third")
+          if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
+            } else {
+              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
+            }
+            if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+      } else {
+        for(var j=0; j<12; j++){
+          console.log("fourth")
+          if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('v-active')){
+            letters.unshift ($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
+
+            if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('outer')){
+               break;
+            }
+          } else {
+            break;
+          }
+        }
+        for(var j=0; j<12; j++){
+          console.log("fifth")
+          if ($('.scrabble-board').children('#'+(left+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i].shift($('.scrabble-board').children('#'+(left+j)).attr('value'));
+            } else {
+              temp_Arr[i] = [$('.scrabble-board').children('#'+(left+j)).attr('value')];
+            }
+            if ($('.scrabble-board').children('#'+(left+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+
+        }
+        for(var j=0; j<12; j++){
+          console.log("sixth")
+          if ($('.scrabble-board').children('#'+(right+j)).hasClass('v-active')){
+            if (temp_Arr[i]){
+              temp_Arr[i].shift($('.scrabble-board').children('#'+(right+j)).attr('value'));
+            } else {
+              temp_Arr[i] = [$('.scrabble-board').children('#'+(right+j)).attr('value')];
+            }
+            if ($('.scrabble-board').children('#'+(right+j)).hasClass('outer')){
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+      }
+    }
+  }
+  console.log(temp_Arr);
+}
+
+
+
 
 function dragStartHolder(ev) {
    ev.dataTransfer.effectAllowed='move';
@@ -324,6 +638,7 @@ function checkWord(){
     tempLetters.push(letters[index][1])
   }
   let word = tempLetters.join('')
+  console.log(word)
   $.ajax({
     url: proxy + 'http://www.wordgamedictionary.com/api/v1/references/scrabble/' + word + '\?key=1.0612195181598369e30',
     method: 'GET'
