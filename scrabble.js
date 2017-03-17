@@ -114,6 +114,7 @@ function getTiles(tiles_needed,tile_holder){
   }
 }
 
+//random number
 function randomIndex(length){
   return  Math.floor(Math.random() * (length + 1));
 }
