@@ -1,20 +1,19 @@
-var player1_score = 0;
-var player2_score = 0;
-var player1_pass = 0;
-var player2_pass = 0;
-var tiles_left =[];
-var current_move = true; //true is player1, false is player2
-var selected_tile = '';
-var start = true;
-var letters = [];
+let player1_score = 0;
+let player2_score = 0;
+let tiles_left =[];
+let current_move = true; //true for player1, false for player2
+let selected_tile = '';
+let start = true; //first play
+let letters = []; //letters played on a turn
+let valid_words = []; //words validated by the API
 
 const noTileBonus = 25;
-var tiles = [['a',9,1],['b',2,3],['c',2,3],['d',4,2],['e',12,1],['f',2,4],['g',3,2],['h',2,4],['i',9,1],['j',1,8],['k',1,5],['l',4,1],['m',2,3],['n',6,1],['o',8,1],['p',2,3],['q',1,10],['r',6,1],['s',4,1],['t',6,1],['u',4,1],['v',2,4],['w',2,4],['x',1,8],['y',2,4],['z',1,10]]
+let tiles = [['a',9,1],['b',2,3],['c',2,3],['d',4,2],['e',12,1],['f',2,4],['g',3,2],['h',2,4],['i',9,1],['j',1,8],['k',1,5],['l',4,1],['m',2,3],['n',6,1],['o',8,1],['p',2,3],['q',1,10],['r',6,1],['s',4,1],['t',6,1],['u',4,1],['v',2,4],['w',2,4],['x',1,8],['y',2,4],['z',1,10]]
 //add wild tiles later -['wild',2,0]
 
-
+// The cells on the scrabble board are numbered from 1-225. The cells on the boundary of the board have a class name of 'outer'
 function createScrabbleBoard(){
-  for (var i = 1; i < 226; i++) {
+  for (let i = 1; i < 226; i++) {
     if ((i >= 2 && i <= 15) || (i >= 212 && i<=224) || (i%15==0) || (i%15==1)){
     $('.scrabble-board').append(`<div class="cell ${i} droptarget outer" id="${i}"  ondragenter="return dragEnterBoard(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoBoard(event)" ondragover="return dragOver(event)" draggable="true" ondragstart="return dragStartBoard(event)"></div>`);
   } else {
@@ -23,35 +22,37 @@ function createScrabbleBoard(){
   }
 }
 
+//create tile bag
 function createTiles(){
   for (index in tiles){
-    for (var i = 0; i < tiles[index][1]; i++) {
+    for (let i = 0; i < tiles[index][1]; i++) {
       tiles_left.push([tiles[index][0],tiles[index][2]]);
     }
   }
 }
 
 $(document).ready(function () {
-  $('.main').hide()
+  $("#exchange").hide();
   $("#popup").hide().fadeIn(1000);
-  $("#play").append(`<div class="p play-click"></div>`);
-  $("#play").append(`<div class="l play-click"></div>`);
-  $("#play").append(`<div class="a play-click"></div>`);
-  $("#play").append(`<div class="y play-click"></div>`);
-  $("#play").append(`<p>Click here to start</p>`);
+  $("#play-start").append(`<div class="p play-click"></div>`);
+  $("#play-start").append(`<div class="l play-click"></div>`);
+  $("#play-start").append(`<div class="a play-click"></div>`);
+  $("#play-start").append(`<div class="y play-click"></div>`);
+  $("#play-start").append(`<p>Click here to start</p>`);
 
 
-  $("#play").on("click", function (e) {
+  $("#play-start").on("click", function (e) {
       e.preventDefault();
       $("#popup").fadeOut(1000);
-      $("#play").remove();
+      $("#play-start").remove();
   });
+
   $('.main').show();
   createScrabbleBoard();
   createTiles();
   $('.113').addClass('start');
   getStartTiles();
-  $('.message').append(`<p>Your turn</p>`);
+  $('.message').append(`<p>Your turn. Start your word at the star</p>`);
   getTurn();
 });
 
@@ -60,89 +61,148 @@ function getTurn(){
   if (current_move){
     $('.tile-holder1').addClass('active').removeClass('inactive').addClass('t-inactive')
     $('.tile-holder2').addClass('inactive').removeClass('active')
-    //$('.tile-holder1').children().addClass('t-active').removeClass('t-inactive');
     $('.player-id').empty();
     $('.player-id').append('Player 1')
   } else if (!current_move){
     $('.tile-holder2').addClass('active').removeClass('inactive').addClass('t-inactive')
     $('.tile-holder1').addClass('inactive').removeClass('active')
-    //$('.tile-holder2').children().addClass('t-active').removeClass('t-inactive');
     $('.player-id').empty();
     $('.player-id').append('Player 2')
   }
 }
 
+function randomIndex(length){
+  return  Math.floor(Math.random() * (length + 1));
+}
+
+
 function getStartTiles(){
-  for (var i = 0; i < 14; i++) {
-    var random_index = randomIndex(tiles_left.length)
+  for (let i = 0; i < 14; i++) {
+    let random_index = randomIndex(tiles_left.length)
     while (tiles_left[random_index]== undefined){
       random_index = randomIndex(tiles_left.length)
     }
-    var tile = (tiles_left[random_index][0]);
+    let tile = (tiles_left[random_index][0]);
     tiles_left.splice(random_index, 1 )
     if ((i%2)){
-      $('.tile-holder1').append(`<div class="tile ${tile} droptarget" id="${tile}" draggable="true" ondragenter="return dragEnterHolder(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoHolder(event)" ondragover="return dragOver(event)" ondragstart="return dragStartHolder(event)"></div>`);
+      $('.tile-holder1').append(`<div class="tile ${tile} droptarget t1" id="${tile}" draggable="true" ondragenter="return dragEnterHolder(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoHolder(event)" ondragover="return dragOver(event)" ondragstart="return dragStartHolder(event)"></div>`);
     } else {
-      $('.tile-holder2').append(`<div class="tile ${tile} droptarget" id="${tile}" draggable="true" ondragenter="return dragEnterHolder(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoHolder(event)" ondragover="return dragOver(event)" ondragstart="return dragStartHolder(event)"></div>`);
+      $('.tile-holder2').append(`<div class="tile ${tile} droptarget t2" id="${tile}" draggable="true" ondragenter="return dragEnterHolder(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoHolder(event)" ondragover="return dragOver(event)" ondragstart="return dragStartHolder(event)"></div>`);
     }
   }
   updateTileInfo();
 }
 
 function refillTiles(){
-  var tiles_needed = 0;
-  var tile_holder ='';
-  if (current_move){
-    tiles_needed = $('.tile-holder1').children('.t-active').length;
-    tile_holder = '.tile-holder1';
-  } else {
-    tiles_needed = $('.tile-holder2').children('.t-active').length;
-    tile_holder = '.tile-holder2';
-  }
+  let tiles_needed = 0;
+  let tile_holder ='';
+  var tile = '.tile-holder'
+
+  tile += (current_move ? 1 : 2);
+  tiles_needed = $(tile).children('.t-active').length;
+  tile_holder = tile;
   getTiles(tiles_needed,tile_holder);
 }
 
 function getTiles(tiles_needed,tile_holder){
-  for (var i = 0; i < tiles_needed; i++) {
-    var random_index = randomIndex(tiles_left.length)
+  for (let i = 0; i < tiles_needed; i++) {
+    let random_index = randomIndex(tiles_left.length)
     while (tiles_left[random_index]== undefined){
       random_index = randomIndex(tiles_left.length)
     }
-    var tile = (tiles_left[random_index][0]);
+    let tile = (tiles_left[random_index][0]);
     tiles_left.splice(random_index, 1 );
     $(tile_holder).children('.t-active').filter(":first").addClass(tile).attr('id',tile).removeClass('t-active');
   }
 }
 
-//random number
-function randomIndex(length){
-  return  Math.floor(Math.random() * (length + 1));
-}
+
 
 $('.play').on('click', function(){
   $('.message').empty();
-  if (checkPlacement()){
-    if (start){
-      if (checkStart()){
-        checkWord();
-        archiveWord();
-        start = false;
-        letters = [];
-        refillTiles();
-        updateTileInfo();
-        current_move = !current_move;
-        getTurn();
-      }
-    } else {
-     checkWord();
-     archiveWord();
-     letters = [];
-     refillTiles();
-     updateTileInfo();
-     current_move = !current_move;
-     getTurn();
-    }
+  if (checkIfTilesPlayed()){
+    var turnFn = start ? firstTurn : otherTurns
+    checkPlacement(turnFn)
+  } else {
+    alert('Place tiles to play!');
   }
+})
+
+function firstTurn (score) {
+  if (checkStart()){
+    start = false;
+    endTurn(score);
+  }
+}
+
+function otherTurns (score) {
+  endTurn(score);
+}
+
+function endTurn(score){
+  letters = [];
+  valid_words = [];
+  updateScore(parseInt(score));
+  displayLastMove();
+  archiveWord();
+  refillTiles();
+  updateTileInfo();
+  current_move = !current_move;
+  getTurn();
+}
+
+
+$('.exchange').on('click', function(e){
+  //e.preventDefault();
+  $('.tile-holder').empty();
+  $('#exchange').show();
+  $('#exchange').children().show();
+  var t ='.t'
+  t += (current_move? 1 : 2);
+  console.log(t);
+    $(t).each(function(){
+      $('.tile-holder').append($(this));
+      $('.tile-holder').addClass('t-active');
+    })
+})
+
+$('#exchange-button').on('click',function(e){
+  let ex_Arr = [];
+  let tile_info = '';
+  let tile_holder = '';
+  if (current_move){
+    tile_info = '.t1';
+    tile_holder = '.tile-holder1';
+  } else {
+    tile_info = '.t2';
+    tile_holder = '.tile-holder2';
+  }
+  $(tile_info).each(function(){
+    if (!$(this).hasClass('ex')){
+      $(tile_holder).append(`<div class="tile ${$(this).attr('id')} droptarget t1" id="${$(this).attr('id')}" draggable="true" ondragenter="return dragEnterHolder(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoHolder(event)" ondragover="return dragOver(event)" ondragstart="return dragStartHolder(event)"></div>`);
+      $(tile_holder).addClass('t-inactive').removeClass('t-active');
+    } else {
+      ex_Arr.push([$(this).attr('id')]);
+      $(this).removeClass($(this).attr('id'));
+      $(this).removeAttr('id');
+      $(this).addClass('t-active').removeClass('t-inactive').removeClass('ex');
+      $(tile_holder).append($(this))
+    }
+  })
+  $('.tile-holder').empty();
+  $('#exchange').hide();
+  refillTiles();
+  $.each(ex_Arr, function(key,value){
+    tiles_left.push([value]);
+  })
+  current_move = !current_move;
+  getTurn();
+})
+
+$('#exchange').on('click','.tile',function(e){
+   e.preventDefault();
+  $(this).attr('border-color','red');
+  $(this).addClass('ex');
 })
 
 $('.pass').on('click', function(){
@@ -151,74 +211,28 @@ $('.pass').on('click', function(){
 })
 
 $('.clear').on('click',function(){
-  $('.scrabble-board').children().each(function(index){
-    console.log("in clear");
-
-    if ($(this).hasClass('s-active')){
-      console.log($(this).attr("value"));
-      var tempArr = letters.map(function(arr){ return arr[0]})
-      letters.splice(tempArr.indexOf($(this),1));
-      $('.tile-holder1').children().addClass($(this).attr("value")).addClass('t-inactive').removeClass('t-active');
-      $('.tile-holder1').attr('id', $(this).attr("value"));
-      $(this).removeClass($(this).attr("value"));
-      $(this).removeAttr('id')
-      $(this).removeClass('s-active');
+  letters.forEach(function(element,index){
+    let cell = element[0];
+    let value = element[1];
+    if (current_move){
+      $('.t1').each(function(){
+        if ($(this).hasClass('t-active')){
+          $(this).addClass(value).addClass('t-inactive').removeClass('t-active').attr('id', value);
+          return false;
+        }
+      })
+    } else {
+      $('.t2').each(function(){
+        if ($(this).hasClass('t-active')){
+          $(this).addClass(value).addClass('t-inactive').removeClass('t-active').attr('id', value);
+          return false;
+        }
+      })
     }
+    $('#' + cell).removeClass(value).removeClass('s-active').removeAttr('value');
   })
+  letters=[];
 })
-
-function updateTileInfo(){
-  $('.tiles-left').empty();
-  $('.tiles-left').append(`<h4>Tiles left : ${tiles_left.length}</h4>`);
-}
-
-function checkPlacement(){
-  var curr_direction = '';
-  var prev_direction = '';
-
-  letters.sort(function(a, b) {
-    return a[0] - b[0];
-  });
-
-  for(i = 0; i < letters.length - 1; i++){
-    var id_1 = letters[i][0]
-    var id_2 = letters[i+1][0]
-    var left = parseInt(id_1) - 1;
-    var right = parseInt(id_1) + 1;
-    var top = parseInt(id_1) - 15;
-    var bottom = parseInt(id_1) + 15;
-    prev_direction = curr_direction;
-
-    switch(parseInt(id_2)){
-      case left :
-        console.log("left")
-        curr_direction = 'horizontal';
-        break;
-      case right :
-        console.log("right")
-        curr_direction = 'horizontal';
-        break;
-      case top :
-        console.log("top")
-        curr_direction = 'vertical';
-        break;
-      case bottom :
-        console.log("bottom")
-        curr_direction = 'vertical';
-        break;
-      default :
-        alert('Use letters either horizonally or vertically to make words');
-        return false;
-    }
-    if (curr_direction !== prev_direction && prev_direction !== ''){
-      alert('Use letters either horizonally or vertically to make words');
-      return false;
-    }
-  }
-  //checkValidity(curr_direction);
-  return true;
-}
-
 
 function checkStart(){
   if (!$('.113').hasClass('s-active')){
@@ -229,41 +243,61 @@ function checkStart(){
   return true;
 }
 
-function addScore(score){
-  if (!current_move){
-    player1_score += score;
+function checkIfTilesPlayed(){
+  if (current_move){
+    if ($('.tile-holder1').children().hasClass('t-active')) {
+      return true;
+    }
+  } else {
+    if ($('.tile-holder2').children().hasClass('t-active')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function updateTileInfo(){
+  $('.tiles-left').empty();
+  $('.tiles-left').append(`<h4>Tiles left : ${tiles_left.length}</h4>`);
+}
+
+function displayTotalScore(){
+  if (current_move){
     $('#p1-score').empty();
     $('#p1-score').append('Total Score: ' + player1_score);
   } else {
-    player2_score += score;
     $('#p2-score').empty();
     $('#p2-score').append('Total Score: ' + player2_score);
   }
 }
 
-function displayLastMove(success, score, word) {
-  if (!current_move) {
+function displayLastMove() {
+  if (current_move) {
     $('#p1-last').empty();
     $('#p1-last').append('Last move: ')
-    if (success == 1) {
-        $('#p1-last').append(word + ' - ' + score + 'points');
-        $('.words').append(word + '<br>')
-    } else {
-        $('#p1-last').append('Invalid! ' + score + 'points');
-    }
-    addScore(score)
-} else {
+    console.log(valid_words);
+    $.each(valid_words, function(key, value) {
+    $('#p1-last').append(valid_words[key][0] + ' - ' + valid_words[key][1]);
+    $('.words').append(valid_words[key][0] + '<br>')
+    });
+  } else {
     $('#p2-last').empty();
     $('#p2-last').append('Last move: ')
-    if (success == 1) {
-        $('#p2-last').append(word + ' - ' + score + 'points');
-        $('.words').append(word + '<br>')
-    } else {
-        $('#p2-last').append('Invalid! ' + score + 'points');
-    }
-    addScore(score)
+    $.each(valid_words, function(key, value) {
+      $('#p2-last').append(valid_words[key][0] + ' - ' + valid_words[key][1]);
+      $('.words').append(valid_words[key][0] + '<br>')
+    });
   }
+  displayTotalScore();
+}
 
+function updateScore(score){
+  if (current_move){
+    console.log(player1_score);
+    player1_score += score;
+  } else {
+    player2_score += score;
+  }
 }
 
 function archiveWord(){
@@ -273,268 +307,6 @@ function archiveWord(){
     }
 });
 }
-
-function checkValidity(curr_direction){
-  console.log("validity")
-  var temp_Arr = [];
-  for(let i = 0; i < letters.length; i++){
-    var id_1 = letters[i][0]
-    var left = parseInt(id_1) - 1;
-    var right = parseInt(id_1) + 1;
-    var top = parseInt(id_1) - 15;
-    var bottom = parseInt(id_1) + 15;
-
-    if(i == 0){
-      console.log("first letter")
-      if (curr_direction == 'horizontal') {
-        for(var j = 0; j < 12; j++){
-          if ($('.scrabble-board').children('#'+(left+j)).hasClass('v-active')){
-            letters.unshift($('.scrabble-board').children('#'+(left+j)).attr('value'));
-
-            if ($('.scrabble-board').children('#'+(left+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-        }
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(top+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(top+j)).attr('value'));
-            } else {
-              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(top+j)).attr('value'));
-            }
-            if ($('.scrabble-board').children('#'+(top+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-
-        }
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
-            } else {
-              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
-            }
-            if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-
-        }
-
-
-      } else {
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(top+j)).hasClass('v-active')){
-            letters.unshift ($('.scrabble-board').children('#'+(top+j)).attr('value'));
-
-            if ($('.scrabble-board').children('#'+(top+j)).hasClass('outer')){
-               break;
-            }
-          } else {
-            break;
-          }
-        }
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(left+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i].shift($('.scrabble-board').children('#'+(left+j)).attr('value'));
-            } else {
-              temp_Arr[i] = [$('.scrabble-board').children('#'+(left+j)).attr('value')];
-            }
-            if ($('.scrabble-board').children('#'+(left+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-
-        }
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(right+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i].shift($('.scrabble-board').children('#'+(right+j)).attr('value'));
-            } else {
-              temp_Arr[i] = [$('.scrabble-board').children('#'+(right+j)).attr('value')];
-            }
-            if ($('.scrabble-board').children('#'+(right+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-        }
-      }
-    }
-    if ((i!==0)&&(i !== letters.length-1)){
-      console.log("other letters")
-      if (curr_direction == 'horizontal') {
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(top+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(top+j)).attr('value'));
-            } else {
-              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(top+j)).attr('value'));
-            }
-            if ($('.scrabble-board').children('#'+(top+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-
-        }
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
-            } else {
-              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
-            }
-            if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-
-        }
-      } else {
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(left+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i].shift($('.scrabble-board').children('#'+(left+j)).attr('value'));
-            } else {
-              temp_Arr[i] = [$('.scrabble-board').children('#'+(left+j)).attr('value')];
-            }
-            if ($('.scrabble-board').children('#'+(left+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-
-        }
-        for(var j=0; j<12; j++){
-          if ($('.scrabble-board').children('#'+(right+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i].shift($('.scrabble-board').children('#'+(right+j)).attr('value'));
-            } else {
-              temp_Arr[i] = [$('.scrabble-board').children('#'+(right+j)).attr('value')];
-            }
-            if ($('.scrabble-board').children('#'+(right+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-        }
-      }
-    }
-    if ((i === (letters.length-1))){
-      console.log("last letter")
-      if (curr_direction === 'horizontal') {
-        for(var j = 0; j < 12; j++){
-          console.log("first")
-          if ($('.scrabble-board').children('#'+(right+j)).hasClass('v-active')){
-            letters.unshift($('.scrabble-board').children('#'+(right+j)).attr('value'));
-
-            if ($('.scrabble-board').children('#'+(right+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-        }
-        for(var j=0; j<12; j++){
-          console.log("second")
-          if ($('.scrabble-board').children('#'+(top+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(top+j)).attr('value'));
-            } else {
-              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(top+j)).attr('value'));
-            }
-            if ($('.scrabble-board').children('#'+(top+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-        }
-        for(var j=0; j<12; j++){
-          console.log("third")
-          if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i+7].unshift($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
-            } else {
-              temp_Arr[i+7] = ($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
-            }
-            if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-        }
-      } else {
-        for(var j=0; j<12; j++){
-          console.log("fourth")
-          if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('v-active')){
-            letters.unshift ($('.scrabble-board').children('#'+(bottom+j)).attr('value'));
-
-            if ($('.scrabble-board').children('#'+(bottom+j)).hasClass('outer')){
-               break;
-            }
-          } else {
-            break;
-          }
-        }
-        for(var j=0; j<12; j++){
-          console.log("fifth")
-          if ($('.scrabble-board').children('#'+(left+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i].shift($('.scrabble-board').children('#'+(left+j)).attr('value'));
-            } else {
-              temp_Arr[i] = [$('.scrabble-board').children('#'+(left+j)).attr('value')];
-            }
-            if ($('.scrabble-board').children('#'+(left+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-
-        }
-        for(var j=0; j<12; j++){
-          console.log("sixth")
-          if ($('.scrabble-board').children('#'+(right+j)).hasClass('v-active')){
-            if (temp_Arr[i]){
-              temp_Arr[i].shift($('.scrabble-board').children('#'+(right+j)).attr('value'));
-            } else {
-              temp_Arr[i] = [$('.scrabble-board').children('#'+(right+j)).attr('value')];
-            }
-            if ($('.scrabble-board').children('#'+(right+j)).hasClass('outer')){
-              break;
-            }
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  }
-  console.log(temp_Arr);
-}
-
-
-
 
 function dragStartHolder(ev) {
    ev.dataTransfer.effectAllowed='move';
@@ -551,7 +323,6 @@ function dragStartBoard(ev) {
    ev.dataTransfer.setData("Text_1", ev.target.getAttribute('id'));
    ev.dataTransfer.setData("Text_2", ev.target.getAttribute('value'));
    ev.dataTransfer.setData("Text_3", 'board');
-   //ev.target.style.opacity = "0.6";
    selected_tile = ev.target;
    return true;
  }
@@ -560,7 +331,7 @@ function dragStartBoard(ev) {
 
 function dragEnterBoard(ev) {
    ev.preventDefault();
-   if ( $(ev.target).hasClass("droptarget") && !$(ev.target).hasClass("r-active") && !$(ev.target).hasClass("s-active")) {
+   if ( $(ev.target).hasClass("droptarget") && !$(ev.target).hasClass("v-active") && !$(ev.target).hasClass("s-active")) {
       ev.target.style.border = "1px dotted red";
      }
    return true;
@@ -585,16 +356,15 @@ function dragLeave(ev) {
 
 function dragDropOntoBoard(ev) {
    ev.preventDefault();
-   if ( $(ev.target).hasClass("droptarget") && !$(ev.target).hasClass("r-active") && !$(ev.target).hasClass("s-active")) {
-     var data_1 = ev.dataTransfer.getData("Text_1");
-     var data_2 = ev.dataTransfer.getData("Text_2");
-     var origin = ev.dataTransfer.getData("Text_3");
+   if ( $(ev.target).hasClass("droptarget") && !$(ev.target).hasClass("v-active") && !$(ev.target).hasClass("s-active")) {
+     let data_1 = ev.dataTransfer.getData("Text_1");
+     let data_2 = ev.dataTransfer.getData("Text_2");
+     let origin = ev.dataTransfer.getData("Text_3");
     ev.target.style.border = "";
-    //ev.target.style.opacity = "1";
     if (origin == 'board'){
       $(ev.target).addClass(data_2);
       $(selected_tile).removeClass('s-active').removeClass(data_2);
-      var tempArr = letters.map(function(arr){ return arr[0]})
+      let tempArr = letters.map(function(arr){ return arr[0]})
       letters.splice(tempArr.indexOf(data_1),1);
     } else {
       $(ev.target).addClass(data_2);
@@ -613,9 +383,9 @@ function dragDropOntoBoard(ev) {
 function dragDropOntoHolder(ev) {
   ev.preventDefault();
   if ( $(ev.target).hasClass("droptarget")) {
-    var data_1 = ev.dataTransfer.getData("Text_1");
-    var data_2 = ev.dataTransfer.getData("Text_2");
-    var origin = ev.dataTransfer.getData("Text_3");
+    let data_1 = ev.dataTransfer.getData("Text_1");
+    let data_2 = ev.dataTransfer.getData("Text_2");
+    let origin = ev.dataTransfer.getData("Text_3");
     ev.target.style.border = "";
     if (origin == "holder"){
       $(selected_tile).removeClass(data_2);
@@ -623,36 +393,11 @@ function dragDropOntoHolder(ev) {
       $(selected_tile).removeClass('t-inactive').addClass('t-active');
     } else if (data_1 !== ''){
       $('#' + data_1).removeClass('s-active').removeClass(data_2);
-      var tempArr = letters.map(function(arr){ return arr[0]})
+      let tempArr = letters.map(function(arr){ return arr[0]})
       letters.splice(tempArr.indexOf(data_1),1);
     }
     $(ev.target).addClass(data_2).addClass('t-inactive').removeClass('t-active');
     $(ev.target).attr('id',data_2);
   }
   return true;
-}
-
-function checkWord(){
-  let proxy = "https://galvanize-cors-proxy.herokuapp.com/"
-  let tempLetters = []
-  for(index in letters){
-    tempLetters.push(letters[index][1])
-  }
-  let word = tempLetters.join('')
-  console.log(word)
-  $.ajax({
-    url: proxy + 'http://www.wordgamedictionary.com/api/v1/references/scrabble/' + word + '\?key=1.0612195181598369e30',
-    method: 'GET'
-  }).then( function(result){
-
-      var xml = new XMLSerializer().serializeToString(result)
-      var xmlDoc = $.parseXML(xml);
-      var $xml = $(xmlDoc)
-      var success = $xml.find('scrabble').text();
-      var score = $xml.find('scrabblescore').text();
-      displayLastMove(success,parseInt(score),word);
-
-  }).catch(function(error){
-    console.log('Error:',error);
-  });
 }

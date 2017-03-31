@@ -39,14 +39,10 @@ header{
 }
 
 .game-info {
-  /*border-style: solid;
-  border-width: 1px;*/
-  /*padding: 5px;*/
   width: 250px;
   position: relative;
   margin: 0px;
   color: white;
-  /*border-radius: 3%;*/
 }
 
 .header-background{
@@ -148,7 +144,7 @@ header{
   z-index: 9999;
 }
 
-#play {
+#play-start {
   width: 140px;
   height: 70px;
   border-style: inset;
@@ -157,12 +153,43 @@ header{
   padding: 5px;
   border-radius: 5%;
   background-color: darkblue;
-  position:absolute;
+  position: absolute;
   left: 27%;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 9999;
   color: white;
+}
+
+#exchange {
+  display: flex;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  border-width: 5px;
+  border-color: white;
+  border-style: groove;
+  /*background-color: silver;*/
+  height : 100px;
+  width : 350px;
+  background-image: url('blue.jpg');
+  background-repeat: no-repeat;
+}
+
+#exchange-button {
+  display: inline-block;
+  position: absolute;
+  left: 40%;
+  top: 70%;
+}
+
+.tile-holder {
+  display: inline-block;
+  position: absolute;
+  left: 10%;
+  top: 5%;
 }
 
 .play-click {
@@ -189,6 +216,12 @@ header{
 
 .player-info{
   margin: 10px;
+  line-height: 15px;
+}
+
+.ex {
+  border-color: red;
+  box-shadow: 0px 1px 1px red ,0px 0px 8px red; 
 }
 
 .inactive {

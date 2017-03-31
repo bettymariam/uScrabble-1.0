@@ -2,11 +2,12 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title><The Unofficial Scrabble</title>
+    <title>The Unofficial Scrabble</title>
     <link rel="stylesheet" type="text/css" href="main.css">
     <link rel="shortcut icon" href="favicon.ico" />
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script defer src="scrabble.js"></script>
+    <script defer src="logic.js"></script>
   </head>
   <body>
     <header>
@@ -23,7 +24,13 @@
             <div id="popup">
               <img src="scrabble-logo.png" alt="popup">
             </div>
-            <div id="play"></div>
+            <div id="play-start"></div>
+          </section>
+          <section>
+            <div id="exchange">
+              <div class="tile-holder holder"></div>
+              <button type="button" class="buttons" name="button" id="exchange-button">OK</button>
+            </div>
           </section>
         </div>
       </div>

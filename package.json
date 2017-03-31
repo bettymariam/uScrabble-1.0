@@ -1,0 +1,23 @@
+{
+  "name": "scrabble",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scrabble.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bettymariam/uScrabble-1.0.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bettymariam/uScrabble-1.0/issues"
+  },
+  "homepage": "https://github.com/bettymariam/uScrabble-1.0#readme",
+  "dependencies": {
+    "request": "^2.81.0",
+    "request-promise": "^4.2.0"
+  }
+}
