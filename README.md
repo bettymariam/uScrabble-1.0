@@ -1,6 +1,5 @@
 <img height="100px" src="./scrabble-logo.png" target_blank />
-uScrabble-1.0
-==
+# uScrabble-1.0
 
 **uScrabble-1.0**, is a two-player browser game that simulates Scrabble.
 
