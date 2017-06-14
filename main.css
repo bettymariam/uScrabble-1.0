@@ -4,6 +4,7 @@ body{
   background-size: 100%;
   display:flex;
 }
+
 header{
   display: none;
   color: white;
@@ -11,12 +12,14 @@ header{
   line-height: 0;
   display: flex;
 }
+
 .scrabble-logo{
   height: 70px;
   width: 60px;
   display: inline-block;
   margin: ;
 }
+
 .name{
   display: inline-block;
   margin-top: 20px;
@@ -31,6 +34,7 @@ header{
   border-radius: 3%;
   margin-left: 5px;
 }
+
 .game-area {
   background-color: darkblue;
   border-style: inset;
@@ -135,6 +139,7 @@ header{
   justify-content: center;
   display: inline;
 }
+
 #popup {
   display:flex;
   position:absolute;
@@ -221,7 +226,7 @@ header{
 
 .ex {
   border-color: red;
-  box-shadow: 0px 1px 1px red ,0px 0px 8px red; 
+  box-shadow: 0px 1px 1px red ,0px 0px 8px red;
 }
 
 .inactive {
@@ -275,136 +280,163 @@ header{
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .a {
   background-image: url('img/A-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .b {
   background-image: url('img/B-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .c {
   background-image: url('img/C-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .d {
   background-image: url('img/D-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .e {
   background-image: url('img/E-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .f {
   background-image: url('img/F-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .g {
   background-image: url('img/G-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .h {
   background-image: url('img/H-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .i {
   background-image: url('img/I-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .j {
   background-image: url('img/J-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .k {
   background-image: url('img/K-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .l {
   background-image: url('img/L-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .m {
   background-image: url('img/M-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .n {
   background-image: url('img/N-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .o {
   background-image: url('img/O-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .p {
   background-image: url('img/P-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .q {
   background-image: url('img/Q-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .r {
   background-image: url('img/R-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .s {
   background-image: url('img/S-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .t {
   background-image: url('img/T-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .u {
   background-image: url('img/U-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .v {
   background-image: url('img/V-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .w {
   background-image: url('img/W-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .x {
   background-image: url('img/X-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .y {
   background-image: url('img/Y-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .z {
   background-image: url('img/Z-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
+
 .wild {
   background-image: url('img/Blank-icon.png');
   background-repeat: no-repeat;

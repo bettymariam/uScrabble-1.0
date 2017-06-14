@@ -1,6 +1,6 @@
 let player1_score = 0;
 let player2_score = 0;
-let tiles_left =[];
+let tiles_left = [];
 let current_move = true; //true for player1, false for player2
 let selected_tile = '';
 let start = true; //first play
@@ -9,12 +9,12 @@ let valid_words = []; //words validated by the API
 
 const noTileBonus = 25;
 let tiles = [['a',9,1],['b',2,3],['c',2,3],['d',4,2],['e',12,1],['f',2,4],['g',3,2],['h',2,4],['i',9,1],['j',1,8],['k',1,5],['l',4,1],['m',2,3],['n',6,1],['o',8,1],['p',2,3],['q',1,10],['r',6,1],['s',4,1],['t',6,1],['u',4,1],['v',2,4],['w',2,4],['x',1,8],['y',2,4],['z',1,10]]
-//add wild tiles later -['wild',2,0]
+//add wild tiles -['wild',2,0]
 
 // The cells on the scrabble board are numbered from 1-225. The cells on the boundary of the board have a class name of 'outer'
 function createScrabbleBoard(){
   for (let i = 1; i < 226; i++) {
-    if ((i >= 2 && i <= 15) || (i >= 212 && i<=224) || (i%15==0) || (i%15==1)){
+    if ((i >= 2 && i <= 15) || (i >= 212 && i <= 224) || (i%15 == 0) || (i%15 == 1)){
     $('.scrabble-board').append(`<div class="cell ${i} droptarget outer" id="${i}"  ondragenter="return dragEnterBoard(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoBoard(event)" ondragover="return dragOver(event)" draggable="true" ondragstart="return dragStartBoard(event)"></div>`);
   } else {
     $('.scrabble-board').append(`<div class="cell ${i} droptarget" id="${i}"  ondragenter="return dragEnterBoard(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoBoard(event)" ondragover="return dragOver(event)" draggable="true" ondragstart="return dragStartBoard(event)"></div>`);
@@ -84,7 +84,7 @@ function getStartTiles(){
     }
     let tile = (tiles_left[random_index][0]);
     tiles_left.splice(random_index, 1 )
-    if ((i%2)){
+    if ((i % 2)){
       $('.tile-holder1').append(`<div class="tile ${tile} droptarget t1" id="${tile}" draggable="true" ondragenter="return dragEnterHolder(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoHolder(event)" ondragover="return dragOver(event)" ondragstart="return dragStartHolder(event)"></div>`);
     } else {
       $('.tile-holder2').append(`<div class="tile ${tile} droptarget t2" id="${tile}" draggable="true" ondragenter="return dragEnterHolder(event)" ondragleave="return dragLeave(event)" ondrop="return dragDropOntoHolder(event)" ondragover="return dragOver(event)" ondragstart="return dragStartHolder(event)"></div>`);
@@ -95,7 +95,7 @@ function getStartTiles(){
 
 function refillTiles(){
   let tiles_needed = 0;
-  let tile_holder ='';
+  let tile_holder = '';
   var tile = '.tile-holder'
 
   tile += (current_move ? 1 : 2);
@@ -157,7 +157,7 @@ $('.exchange').on('click', function(e){
   $('.tile-holder').empty();
   $('#exchange').show();
   $('#exchange').children().show();
-  var t ='.t'
+  var t = '.t'
   t += (current_move? 1 : 2);
   console.log(t);
     $(t).each(function(){
@@ -231,7 +231,7 @@ $('.clear').on('click',function(){
     }
     $('#' + cell).removeClass(value).removeClass('s-active').removeAttr('value');
   })
-  letters=[];
+  letters = [];
 })
 
 function checkStart(){

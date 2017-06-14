@@ -66,7 +66,7 @@ function checkIfConnected(id) {
 }
 
 function checkIfPlacedBetweenExistingLetters(id_1, id_2, curr_direction){
-  if (curr_direction===''){
+  if (curr_direction === ''){
     if (checkRight(id_1, id_2, curr_direction)){
       return true;
     } else if (checkBottom(id_1, id_2, curr_direction)){
@@ -74,7 +74,7 @@ function checkIfPlacedBetweenExistingLetters(id_1, id_2, curr_direction){
     } else {
       return false;
     }
-  } else if (curr_direction==='horizontal'){
+  } else if (curr_direction === 'horizontal'){
     return checkRight(id_1, id_2, curr_direction)
   } else {
     return checkBottom(id_1, id_2, curr_direction)
@@ -185,7 +185,7 @@ function rightSide(id, right){
 
 
 function checkValidity(curr_direction, cb){
-  let words= [];
+  let words = [];
   var joinedWords = [];
   for(let i = 0; i < letters.length; i++){
     let id = letters[i][0];
@@ -325,75 +325,3 @@ function lastLetter(i, id, top, bottom, left, right, temp_Arr, words, curr_direc
     }
   }
 }
-
-// function checkWord(arr, callback){
-//   let proxy = "https://galvanize-cors-proxy.herokuapp.com/"
-//   if (arr.length === 1){
-//     let word = arr.join('')
-//   } else {
-//     let word = arr[0].join('')
-//   }
-//   console.log('checkword ' + word);
-//   $.ajax({
-//     url: proxy + 'http://www.wordgamedictionary.com/api/v1/references/scrabble/' + word + '\?key=1.0612195181598369e30',
-//     method: 'GET'
-//   }).then( function(result){
-//       let xml = new XMLSerializer().serializeToString(result)
-//       let xmlDoc = $.parseXML(xml);
-//       let $xml = $(xmlDoc);
-//       let success = $xml.find('scrabble').text();
-//       let score = $xml.find('scrabblescore').text();
-//       //callback(score);
-//       if (success == 1) {
-//         let temp_Arr = [word,score]
-//         if (valid_words) {
-//           valid_words.push(temp_Arr);
-//         } else {
-//           valid_words = [temp_Arr];
-//         }
-//
-//       }
-//       else {
-//         alert('Invalid word');
-//       }
-//   }).catch(function(error){
-//     console.log('Error:',error);
-//   });
-// }
-
-// function checkWord(words, cb){
-//   let proxy = "https://galvanize-cors-proxy.herokuapp.com/";
-//   let tot_score = 0;
-//   let word = words[0].join('');
-//     $.ajax({
-//       url: proxy + 'http://www.wordgamedictionary.com/api/v1/references/scrabble/' + word + '\?key=1.0612195181598369e30',
-//       method: 'GET'
-//      }).then( function(result){
-//         let xml = new XMLSerializer().serializeToString(result)
-//         let xmlDoc = $.parseXML(xml);
-//         let $xml = $(xmlDoc);
-//         let success = $xml.find('scrabble').text();
-//         let score = $xml.find('scrabblescore').text();
-//         tot_score += score;
-//
-//         if (success == 1) {
-//           let temp_Arr = [word,score]
-//           if (valid_words) {
-//             valid_words.push(temp_Arr);
-//           } else {
-//             valid_words = [temp_Arr];
-//           }
-//           //if ( i === words.length -1){
-//             cb(tot_score);
-//           //}
-//         }
-//         else {
-//           alert('Invalid word');
-//         }
-//     }).catch(function(error){
-//       console.log('Error:',error);
-//     });
-//   //})
-
-
-//}
