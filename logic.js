@@ -1,5 +1,3 @@
-//const rp = require('request-promise')
-
 function checkPlacement(cb){
   let curr_direction = '';
   let prev_direction = '';
@@ -212,69 +210,7 @@ function checkValidity(curr_direction, cb){
   checkWord(promises,cb);
 }
 
-function createPromises(words){
-  var promises = $.map(words, function (word, index) {
-      return $.ajax({ url: makeUrl(word), method: 'GET'})
-  })
-  return promises;
-}
-
-function makeUrl(word){
-  let proxy = "https://galvanize-cors-proxy.herokuapp.com/";
-  let url = proxy + 'http://www.wordgamedictionary.com/api/v1/references/scrabble/' + word + '\?key=1.0612195181598369e30'
-  return url;
-}
-
-function checkWord(promises, cb){
-  let total_score = 0;
-  let allValid = false;
-  Promise.all(promises).then(function(results){
-    console.log(results)
-    results.map(function(result){
-      console.log(result);
-      let xml = new XMLSerializer().serializeToString(result)
-      console.log(xml);
-      let xmlDoc = $.parseXML(xml);
-      let $xml = $(xmlDoc);
-      let success = $xml.find('scrabble').text();
-      let word = $xml.find('word').text();
-      let score = parseInt($xml.find('scrabblescore').text());
-      total_score += score
-      if (success == 1) {
-        allValid = true;
-        let temp_Arr = [word,score]
-        if (valid_words) {
-          valid_words.push(temp_Arr);
-        } else {
-          valid_words = [temp_Arr];
-        }
-      }
-      else {
-        allValid = false;
-        alert('Invalid word');
-      }
-    });
-    if (allValid){
-      cb(total_score);
-    }
- }).catch(function(error){
-    console.log('Error:',error);
- });
-}
-
-function calculateScore(words){
-  let score = 0;
-  $.each(words, function(index, value){
-    score += tiles.map(function(element){
-     let tile = element.indexOf(value);
-     return tiles[tile][2];
-    })
-  })
-  return score;
-}
-
 function firstLetter(i, id, top, bottom, left, right, temp_Arr, words, curr_direction, cb){
-  console.log("first letter")
   temp_Arr = above(id, top);
   temp_Arr.push($('#'+(id)).attr('value'));
   words.push(temp_Arr.concat(down(id, bottom)));
@@ -285,7 +221,6 @@ function firstLetter(i, id, top, bottom, left, right, temp_Arr, words, curr_dire
 }
 
 function middleLetter(i, id, top, bottom, left, right, temp_Arr, words, curr_direction, cb){
-  console.log("other letters")
   let str = ''
   temp_Arr = [];
   if (curr_direction == 'horizontal') {
@@ -306,7 +241,6 @@ function middleLetter(i, id, top, bottom, left, right, temp_Arr, words, curr_dir
 }
 
 function lastLetter(i, id, top, bottom, left, right, temp_Arr, words, curr_direction, cb){
-  console.log("last letter")
   let str = ''
   temp_Arr = [];
   if (curr_direction === 'horizontal') {
@@ -324,4 +258,67 @@ function lastLetter(i, id, top, bottom, left, right, temp_Arr, words, curr_direc
       words.push(str);
     }
   }
+}
+
+function createPromises(words){
+  var promises = $.map(words, function (word, index) {
+      return $.ajax({ url: makeUrl(word), method: 'GET'})
+  })
+  return promises;
+}
+
+function makeUrl(word){
+  let proxy = "https://galvanize-cors-proxy.herokuapp.com/";
+  let url = proxy + 'http://www.wordgamedictionary.com/api/v1/references/scrabble/' + word + '\?key=1.0612195181598369e30'
+  return url;
+}
+
+function checkWord(promises, cb){
+  let total_score = 0;
+  let allValid = false;
+  invalid = false;
+
+  Promise.all(promises).then(function(results){
+    results.map(function(result){
+      let xml = new XMLSerializer().serializeToString(result)
+      let xmlDoc = $.parseXML(xml);
+      let $xml = $(xmlDoc);
+      let success = $xml.find('scrabble').text();
+      let word = $xml.find('word').text();
+      //let score = parseInt($xml.find('scrabblescore').text());
+
+      if (success == 1) {
+        allValid = true;
+        let score = calculateScore(word);
+        total_score += score;
+        let temp_Arr = [word, score];
+        valid_words.push(temp_Arr);
+      }
+      else {
+        allValid = false;
+        invalid = true;
+        alert('Invalid word');
+      }
+    });
+    if (allValid){
+      cb(total_score);
+    } else {
+      $('.clear').trigger('click');
+      $('.pass').trigger('click');
+    }
+ }).catch(function(error){
+    console.log('Error:',error);
+ });
+}
+
+function calculateScore(word){
+  let score = 0;
+
+  for( let i = 0; i < word.length; i ++){
+    let index = tiles.findIndex(function(element){
+      return word[i] === element[0];
+    });
+    score += tiles[index][2];
+  }
+  return score;
 }

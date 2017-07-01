@@ -6,6 +6,8 @@ let selected_tile = '';
 let start = true; //first play
 let letters = []; //letters played on a turn
 let valid_words = []; //words validated by the API
+let played = false;
+let invalid = false;
 
 const noTileBonus = 25;
 let tiles = [['a',9,1],['b',2,3],['c',2,3],['d',4,2],['e',12,1],['f',2,4],['g',3,2],['h',2,4],['i',9,1],['j',1,8],['k',1,5],['l',4,1],['m',2,3],['n',6,1],['o',8,1],['p',2,3],['q',1,10],['r',6,1],['s',4,1],['t',6,1],['u',4,1],['v',2,4],['w',2,4],['x',1,8],['y',2,4],['z',1,10]]
@@ -64,11 +66,12 @@ function getTurn(){
     $('.player-id').empty();
     $('.player-id').append('Player 1')
   } else if (!current_move){
-    $('.tile-holder2').addClass('active').removeClass('inactive').addClass('t-inactive')
-    $('.tile-holder1').addClass('inactive').removeClass('active')
+    $('.tile-holder2').addClass('active').removeClass('inactive').addClass('t-inactive');
+    $('.tile-holder1').addClass('inactive').removeClass('active');
     $('.player-id').empty();
-    $('.player-id').append('Player 2')
+    $('.player-id').append('Player 2');
   }
+  played = false;
 }
 
 function randomIndex(length){
@@ -140,30 +143,30 @@ function otherTurns (score) {
 }
 
 function endTurn(score){
-  letters = [];
-  valid_words = [];
   updateScore(parseInt(score));
   displayLastMove();
   archiveWord();
   refillTiles();
   updateTileInfo();
+  letters = [];
+  valid_words = [];
   current_move = !current_move;
   getTurn();
 }
 
 
 $('.exchange').on('click', function(e){
-  //e.preventDefault();
-  $('.tile-holder').empty();
-  $('#exchange').show();
-  $('#exchange').children().show();
-  var t = '.t'
-  t += (current_move? 1 : 2);
-  console.log(t);
+  if (!played && tiles_left.length){
+    $('.tile-holder').empty();
+    $('#exchange').show();
+    $('#exchange').children().show();
+    var t = '.t';
+    t += (current_move? 1 : 2);
     $(t).each(function(){
       $('.tile-holder').append($(this));
       $('.tile-holder').addClass('t-active');
     })
+  }
 })
 
 $('#exchange-button').on('click',function(e){
@@ -206,8 +209,10 @@ $('#exchange').on('click','.tile',function(e){
 })
 
 $('.pass').on('click', function(){
-  current_move = !current_move;
-  getTurn();
+  if (!played || invalid){
+    current_move = !current_move;
+    getTurn();
+  }
 })
 
 $('.clear').on('click',function(){
@@ -237,8 +242,8 @@ $('.clear').on('click',function(){
 function checkStart(){
   if (!$('.113').hasClass('s-active')){
     $('.message').empty();
-    $('.message').append(`<p>Start your word at the star</p>`)
-  return false
+    $('.message').append(`<p>Start your word at the star</p>`);
+    return false
   }
   return true;
 }
@@ -274,18 +279,17 @@ function displayTotalScore(){
 function displayLastMove() {
   if (current_move) {
     $('#p1-last').empty();
-    $('#p1-last').append('Last move: ')
-    console.log(valid_words);
+    $('#p1-last').append('Last move: ');
     $.each(valid_words, function(key, value) {
-    $('#p1-last').append(valid_words[key][0] + ' - ' + valid_words[key][1]);
-    $('.words').append(valid_words[key][0] + '<br>')
+    $('#p1-last').append(value[0] + ' - ' + value[1] + ' points');
+    $('.words').append(value[0] + '<br>');
     });
   } else {
     $('#p2-last').empty();
-    $('#p2-last').append('Last move: ')
+    $('#p2-last').append('Last move: ');
     $.each(valid_words, function(key, value) {
-      $('#p2-last').append(valid_words[key][0] + ' - ' + valid_words[key][1]);
-      $('.words').append(valid_words[key][0] + '<br>')
+      $('#p2-last').append(value[0] + ' - ' + value[1] + ' points');
+      $('.words').append(valid_words[key][0] + '<br>');
     });
   }
   displayTotalScore();
@@ -293,7 +297,6 @@ function displayLastMove() {
 
 function updateScore(score){
   if (current_move){
-    console.log(player1_score);
     player1_score += score;
   } else {
     player2_score += score;
@@ -309,13 +312,14 @@ function archiveWord(){
 }
 
 function dragStartHolder(ev) {
-   ev.dataTransfer.effectAllowed='move';
-   ev.dataTransfer.setData("Text_1", ev.target.getAttribute('id'));
-   ev.dataTransfer.setData("Text_2", ev.target.getAttribute('id'));
-   ev.dataTransfer.setData("Text_3", 'holder');
-   selected_tile = ev.target;
-   $(ev.target).addClass('t-active').removeClass('t-inactive')
-   return true;
+  played = true;
+  ev.dataTransfer.effectAllowed='move';
+  ev.dataTransfer.setData("Text_1", ev.target.getAttribute('id'));
+  ev.dataTransfer.setData("Text_2", ev.target.getAttribute('id'));
+  ev.dataTransfer.setData("Text_3", 'holder');
+  selected_tile = ev.target;
+  $(ev.target).addClass('t-active').removeClass('t-inactive')
+  return true;
 }
 function dragStartBoard(ev) {
   if ($(ev.target).hasClass('s-active')){

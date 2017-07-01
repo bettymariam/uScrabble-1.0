@@ -63,6 +63,7 @@ header{
   margin: 5px;
   border-radius: 3%;
   padding: 5px;
+  overflow: scroll;
 }
 
 .player-id{
@@ -213,6 +214,7 @@ header{
   color: white;
   border-radius: 3%;
   line-height: 1.5px;
+  overflow: scroll;
 }
 
 .score{
